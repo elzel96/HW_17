@@ -9,9 +9,79 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    // MARK: - UI Elements
+    
+    private lazy var changeColorButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Change background color", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var generatePasswordButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Generate password", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var stopButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("STOP searching", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var passwordLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 18)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var passwordField: UITextField = {
+        let passwordField = UITextField()
+        passwordField.placeholder = "Type password here"
+        passwordField.translatesAutoresizingMaskIntoConstraints = false
+        return passwordField
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupHierarchy()
+        setupLayout()
+    }
+    
+    // MARK: - Setups
+
+    private func setupHierarchy() {
+        view.addSubview(changeColorButton)
+        view.addSubview(generatePasswordButton)
+        view.addSubview(passwordField)
+        view.addSubview(passwordLabel)
+        view.addSubview(stopButton)
+    }
+    
+    private func setupLayout() {
+        NSLayoutConstraint.activate([
+            passwordLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            passwordLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: (0.2 * (view.bounds.height))),
+            
+            stopButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stopButton.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 10),
+            
+            passwordField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            passwordField.topAnchor.constraint(equalTo: stopButton.bottomAnchor, constant: 10),
+            
+            generatePasswordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            generatePasswordButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
+            
+            changeColorButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            changeColorButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: (-0.1 * (view.bounds.height)))
+        ])
     }
 
 
