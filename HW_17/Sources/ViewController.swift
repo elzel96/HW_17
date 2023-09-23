@@ -9,12 +9,24 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var generatedPassword = ""
+    var isBlack: Bool = false {
+        didSet {
+            if isBlack {
+                self.view.backgroundColor = .black
+            } else {
+                self.view.backgroundColor = .white
+            }
+        }
+    }
+    
     // MARK: - UI Elements
     
     private lazy var changeColorButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Change background color", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -23,6 +35,7 @@ class ViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Generate password", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(passwordGenerated), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -31,6 +44,7 @@ class ViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("STOP searching", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(stopSearching), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -48,6 +62,8 @@ class ViewController: UIViewController {
         passwordField.translatesAutoresizingMaskIntoConstraints = false
         return passwordField
     }()
+    
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,8 +107,30 @@ class ViewController: UIViewController {
         
         while password != passwordToUnlock {
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+            print(password)
+            self.passwordLabel.text = "Is \(password) your password?"
         }
+        self.passwordLabel.text = "Done! Your password is \(password)"
+        print(password)
     }
 
+    // MARK: - Action
+    
+    @objc func buttonTapped() {
+        isBlack.toggle()
+    }
+    
+    @objc func passwordGenerated() {
+        generatedPassword = generateRandomPassword()
+        passwordField.isSecureTextEntry = true
+        passwordField.text = generatedPassword
+        print(generatedPassword)
+        
+        generatePasswordButton.isEnabled = false
+        
+        bruteForce(passwordToUnlock: self.generatedPassword)
+    }
+    
+    @objc func stopSearching() { }
 }
 
