@@ -63,6 +63,7 @@ class ViewController: UIViewController {
     private lazy var passwordField: UITextField = {
         let passwordField = UITextField()
         passwordField.placeholder = "Type password here"
+        passwordField.returnKeyType = .done
         passwordField.translatesAutoresizingMaskIntoConstraints = false
         return passwordField
     }()
@@ -73,6 +74,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupHierarchy()
         setupLayout()
+        passwordField.delegate = self
     }
     
     // MARK: - Setups
@@ -151,6 +153,7 @@ class ViewController: UIViewController {
         passwordField.text = generatedPassword
         print(generatedPassword)
         
+        isStop = false
         generatePasswordButton.isEnabled = false
         
         queue.async {
@@ -161,3 +164,25 @@ class ViewController: UIViewController {
     @objc func stopSearching() { isStop = true }
 }
 
+extension ViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        textField.isSecureTextEntry = true
+        return true
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool { true }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        if let text = textField.text {
+            generatedPassword = text
+        }
+        queue.async(flags: .barrier) {
+            self.bruteForce(passwordToUnlock: self.generatedPassword)
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
