@@ -109,24 +109,34 @@ class ViewController: UIViewController {
         
         var password: String = ""
         
-        while password != passwordToUnlock {
-            if self.isStop { return }
-            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+        let workItem = DispatchWorkItem {
+            while password != passwordToUnlock {
+                if self.isStop { return }
+                password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+                DispatchQueue.main.sync {
+                    self.passwordLabel.text = "Is \(password) your password?"
+                }
+            }
+        }
+        
+        let notifyView = DispatchWorkItem {
             DispatchQueue.main.sync {
-                self.passwordLabel.text = "Is \(password) your password?"
+                self.generatePasswordButton.isEnabled = true
+                if self.isStop {
+                    self.isStop.toggle()
+                    self.passwordLabel.text = "Didn't find your password"
+                    return
+                }
+                self.passwordLabel.text = "Done! Your password is \(password)"
+                self.passwordField.isSecureTextEntry = false
             }
         }
-        DispatchQueue.main.sync {
-            self.generatePasswordButton.isEnabled = true
-            if self.isStop {
-                self.isStop.toggle()
-                self.passwordLabel.text = "Didn't find your password"
-                return
-            }
-            self.passwordLabel.text = "Done! Your password is \(password)"
-            self.passwordField.isSecureTextEntry = false
+        
+        workItem.notify(queue: queue) {
+            notifyView.perform()
         }
-        print(password)
+
+        queue.async(execute: workItem)
     }
 
     // MARK: - Action
