@@ -9,6 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let queue = DispatchQueue(label: "newQueue", attributes: .concurrent)
+    
     var generatedPassword = ""
     var isBlack: Bool = false {
         didSet {
@@ -108,9 +110,13 @@ class ViewController: UIViewController {
         while password != passwordToUnlock {
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
             print(password)
-            self.passwordLabel.text = "Is \(password) your password?"
+            DispatchQueue.main.sync {
+                self.passwordLabel.text = "Is \(password) your password?"
+            }
         }
-        self.passwordLabel.text = "Done! Your password is \(password)"
+        DispatchQueue.main.sync {
+            self.passwordLabel.text = "Done! Your password is \(password)"
+        }
         print(password)
     }
 
@@ -128,7 +134,9 @@ class ViewController: UIViewController {
         
         generatePasswordButton.isEnabled = false
         
-        bruteForce(passwordToUnlock: self.generatedPassword)
+        queue.async {
+            self.bruteForce(passwordToUnlock: self.generatedPassword)
+        }
     }
     
     @objc func stopSearching() { }
