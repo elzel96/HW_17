@@ -83,7 +83,16 @@ class ViewController: UIViewController {
             changeColorButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: (-0.1 * (view.bounds.height)))
         ])
     }
-
+    
+    private func bruteForce(passwordToUnlock: String) {
+        let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
+        
+        var password: String = ""
+        
+        while password != passwordToUnlock {
+            password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+        }
+    }
 
 }
 
