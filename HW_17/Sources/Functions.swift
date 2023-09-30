@@ -12,8 +12,9 @@ func indexOf(character: Character, _ array: [String]) -> Int {
 }
 
 func characterAt(index: Int, _ array: [String]) -> Character {
-    return index < array.count ? Character(array[index])
-                               : Character("")
+    index < array.count
+    ? Character(array[index])
+    : Character("")
 }
 
 func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
