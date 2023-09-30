@@ -8,7 +8,7 @@
 import Foundation
 
 func indexOf(character: Character, _ array: [String]) -> Int {
-    return array.firstIndex(of: String(character))!
+   array.firstIndex(of: String(character))!
 }
 
 func characterAt(index: Int, _ array: [String]) -> Character {
