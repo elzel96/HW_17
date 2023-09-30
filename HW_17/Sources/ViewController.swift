@@ -184,6 +184,16 @@ class ViewController: UIViewController {
 
         queue.async(execute: workItem)
     }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Ok!", style: .cancel))
+        self.present(alert, animated: true)
+    }
 
     // MARK: - Action
     
@@ -229,14 +239,15 @@ extension ViewController: UITextFieldDelegate {
         if let text = textField.text {
             for char in text {
                 if !String().printable.contains(char) {
-                    print("You can't use such password")
+                    showAlert(title: "You can't use such password", message: "You can use only digits, English letters and these symbols !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ for password.")
+                    
                     return false
                 }
             }
             if text != "" {
                 return true
             } else {
-                print("Type your password")
+                showAlert(title: "Type your password", message: "You can create your own password using digits, English letters and these symbols !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ or use generate password button and press enter.")
             }
         }
         return false
