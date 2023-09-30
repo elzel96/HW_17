@@ -29,7 +29,10 @@ class ViewController: UIViewController {
     private lazy var changeColorButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Change background color", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemPurple
+        button.layer.cornerRadius = 20
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -37,8 +40,12 @@ class ViewController: UIViewController {
     
     private lazy var generatePasswordButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Generate password", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.setTitle("Generate password💫", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemIndigo
+        button.layer.cornerRadius = 12
+        button.setTitleColor(.lightGray, for: .disabled)
         button.addTarget(self, action: #selector(generatePassword), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -46,9 +53,13 @@ class ViewController: UIViewController {
     
     private lazy var crackPasswordButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Crack password", for: .normal)
+        button.setTitle("Crack password🕵‍♂️", for: .normal)
         button.isEnabled = false
-        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemIndigo
+        button.layer.cornerRadius = 12
+        button.setTitleColor(.lightGray, for: .disabled)
         button.addTarget(self, action: #selector(crackPassword), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -56,8 +67,11 @@ class ViewController: UIViewController {
     
     private lazy var stopButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("STOP searching", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.setTitle("STOP🕵‍♂️", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemIndigo
+        button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(stopSearching), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -65,7 +79,8 @@ class ViewController: UIViewController {
     
     private lazy var passwordLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 16)
+        label.textColor = .systemPurple
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -73,7 +88,11 @@ class ViewController: UIViewController {
     private lazy var passwordField: UITextField = {
         let passwordField = UITextField()
         passwordField.placeholder = "Type password here"
+        passwordField.textAlignment = .center
         passwordField.returnKeyType = .done
+        passwordField.clipsToBounds = true
+        passwordField.layer.cornerRadius = 12
+        passwordField.backgroundColor = .lightGray
         passwordField.translatesAutoresizingMaskIntoConstraints = false
         return passwordField
     }()
@@ -101,21 +120,32 @@ class ViewController: UIViewController {
     private func setupLayout() {
         NSLayoutConstraint.activate([
             passwordLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            passwordLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: (0.2 * (view.bounds.height))),
+            passwordLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: (0.35 * (view.bounds.height))),
             
             stopButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stopButton.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 10),
+            stopButton.heightAnchor.constraint(equalToConstant: 0.045 * (view.bounds.height)),
+            stopButton.widthAnchor.constraint(equalToConstant: 0.3 * (view.bounds.width)),
             
             passwordField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordField.topAnchor.constraint(equalTo: stopButton.bottomAnchor, constant: 10),
+            passwordField.heightAnchor.constraint(equalToConstant: 0.05 * (view.bounds.height)),
+            passwordField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.04 * (view.bounds.height))),
+            passwordField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: (-0.04 * (view.bounds.height))),
             
-            generatePasswordButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.05 * (view.bounds.height))),
+            generatePasswordButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.04 * (view.bounds.height))),
             generatePasswordButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
+            generatePasswordButton.heightAnchor.constraint(equalToConstant: 0.05 * (view.bounds.height)),
+            generatePasswordButton.widthAnchor.constraint(equalToConstant: 0.4 * (view.bounds.width)),
             
-            crackPasswordButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: (-0.05 * (view.bounds.height))),
+            crackPasswordButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: (-0.04 * (view.bounds.height))),
             crackPasswordButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
+            crackPasswordButton.heightAnchor.constraint(equalToConstant: 0.05 * (view.bounds.height)),
+            crackPasswordButton.widthAnchor.constraint(equalToConstant: 0.4 * (view.bounds.width)),
             
             changeColorButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            changeColorButton.heightAnchor.constraint(equalToConstant: 0.05 * (view.bounds.height)),
+            changeColorButton.widthAnchor.constraint(equalToConstant: 0.5 * (view.bounds.width)),
             changeColorButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: (-0.1 * (view.bounds.height)))
         ])
     }
@@ -140,7 +170,7 @@ class ViewController: UIViewController {
                 self.generatePasswordButton.isEnabled = true
                 if self.isStop {
                     self.isStop.toggle()
-                    self.passwordLabel.text = "Didn't find your password"
+                    self.passwordLabel.text = "Search was stopped"
                     return
                 }
                 self.passwordLabel.text = "Done! Your password is \(password)"
