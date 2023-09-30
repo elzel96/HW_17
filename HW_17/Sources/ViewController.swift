@@ -39,7 +39,17 @@ class ViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Generate password", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(passwordGenerated), for: .touchUpInside)
+        button.addTarget(self, action: #selector(generatePassword), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var crackPasswordButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Crack password", for: .normal)
+        button.isEnabled = false
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(crackPassword), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -82,6 +92,7 @@ class ViewController: UIViewController {
     private func setupHierarchy() {
         view.addSubview(changeColorButton)
         view.addSubview(generatePasswordButton)
+        view.addSubview(crackPasswordButton)
         view.addSubview(passwordField)
         view.addSubview(passwordLabel)
         view.addSubview(stopButton)
@@ -98,8 +109,11 @@ class ViewController: UIViewController {
             passwordField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordField.topAnchor.constraint(equalTo: stopButton.bottomAnchor, constant: 10),
             
-            generatePasswordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            generatePasswordButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.05 * (view.bounds.height))),
             generatePasswordButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
+            
+            crackPasswordButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: (-0.05 * (view.bounds.height))),
+            crackPasswordButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
             
             changeColorButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             changeColorButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: (-0.1 * (view.bounds.height)))
@@ -147,38 +161,63 @@ class ViewController: UIViewController {
         isBlack.toggle()
     }
     
-    @objc func passwordGenerated() {
+    @objc func generatePassword() {
         generatedPassword = generateRandomPassword()
         passwordField.isSecureTextEntry = true
         passwordField.text = generatedPassword
         print(generatedPassword)
-        
+    }
+    
+    @objc func crackPassword() {
         isStop = false
         generatePasswordButton.isEnabled = false
+        crackPasswordButton.isEnabled = false
+        passwordField.isEnabled = false
         
         queue.async {
             self.bruteForce(passwordToUnlock: self.generatedPassword)
+            DispatchQueue.main.sync {
+                self.passwordField.isEnabled = true
+            }
         }
     }
     
-    @objc func stopSearching() { isStop = true }
+    @objc func stopSearching() {
+        isStop = true
+        passwordField.isEnabled = true
+    }
 }
 
 extension ViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        crackPasswordButton.isEnabled = false
         textField.isSecureTextEntry = true
         return true
     }
     
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool { true }
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        if let text = textField.text {
+            for char in text {
+                if !String().printable.contains(char) {
+                    print("You can't use such password")
+                    return false
+                }
+            }
+            if text != "" {
+                return true
+            } else {
+                print("Type your password")
+            }
+        }
+        return false
+    }
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        crackPasswordButton.isEnabled = true
         if let text = textField.text {
             generatedPassword = text
         }
-        queue.async(flags: .barrier) {
-            self.bruteForce(passwordToUnlock: self.generatedPassword)
-        }
+        print(generatedPassword)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
