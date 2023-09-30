@@ -22,8 +22,7 @@ func generateBruteForce(_ string: String, fromArray array: [String]) -> String {
 
     if str.count <= 0 {
         str.append(characterAt(index: 0, array))
-    }
-    else {
+    } else {
         str.replace(at: str.count - 1,
                     with: characterAt(index: (indexOf(character: str.last!, array) + 1) % array.count, array))
 
