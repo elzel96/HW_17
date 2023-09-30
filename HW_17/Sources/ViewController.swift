@@ -97,6 +97,19 @@ class ViewController: UIViewController {
         return passwordField
     }()
     
+    private lazy var container: UIView = {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        return container
+    }()
+    
+    private lazy var activeIndicator: UIActivityIndicatorView = {
+        let activeIndicator = UIActivityIndicatorView(style: .large)
+        activeIndicator.translatesAutoresizingMaskIntoConstraints = false
+        return activeIndicator
+    }()
+
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
@@ -115,6 +128,8 @@ class ViewController: UIViewController {
         view.addSubview(passwordField)
         view.addSubview(passwordLabel)
         view.addSubview(stopButton)
+        view.addSubview(container)
+        container.addSubview(activeIndicator)
     }
     
     private func setupLayout() {
@@ -122,12 +137,16 @@ class ViewController: UIViewController {
             passwordLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: (0.35 * (view.bounds.height))),
             
+            container.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.04 * (view.bounds.height))),
+            container.topAnchor.constraint(equalTo: view.topAnchor, constant: (0.35 * (view.bounds.height))),
+            container.heightAnchor.constraint(equalToConstant: 0.04 * (view.bounds.height)),
+            container.widthAnchor.constraint(equalToConstant: container.bounds.height),
+            
             stopButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stopButton.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 10),
             stopButton.heightAnchor.constraint(equalToConstant: 0.045 * (view.bounds.height)),
             stopButton.widthAnchor.constraint(equalToConstant: 0.3 * (view.bounds.width)),
             
-            passwordField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordField.topAnchor.constraint(equalTo: stopButton.bottomAnchor, constant: 10),
             passwordField.heightAnchor.constraint(equalToConstant: 0.05 * (view.bounds.height)),
             passwordField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: (0.04 * (view.bounds.height))),
@@ -161,6 +180,7 @@ class ViewController: UIViewController {
                 password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
                 DispatchQueue.main.sync {
                     self.passwordLabel.text = "Is \(password) your password?"
+                    self.activeIndicator.startAnimating()
                 }
             }
         }
@@ -170,10 +190,12 @@ class ViewController: UIViewController {
                 self.generatePasswordButton.isEnabled = true
                 if self.isStop {
                     self.isStop.toggle()
-                    self.passwordLabel.text = "Search was stopped"
+                    self.passwordLabel.text = "Search was interrupted"
+                    self.activeIndicator.stopAnimating()
                     return
                 }
                 self.passwordLabel.text = "Done! Your password is \(password)"
+                self.activeIndicator.stopAnimating()
                 self.passwordField.isSecureTextEntry = false
             }
         }
@@ -194,6 +216,21 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Ok!", style: .cancel))
         self.present(alert, animated: true)
     }
+    
+//    private func activeIndicator() {
+//
+//        let container = UIView()
+//        container.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
+//
+//        let activeIndicator = UIActivityIndicatorView(style: .large)
+//        activeIndicator.center = self.view.center
+//
+//        container.addSubview(activeIndicator)
+//        self.view.addSubview(container)
+//
+//        activeIndicator.startAnimating()
+//        activeIndicator.stopAnimating()
+//    }
 
     // MARK: - Action
     
